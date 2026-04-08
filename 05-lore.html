@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KAFKA — Nihility's Servant</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED STYLES ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060310;--gold:#c9a84c;--gold2:#f0d080;--purple:#7c3aed;--purple2:#a78bfa;
+  --neon:#f0abfc;--neon2:#c026d3;--cyan:#67e8f9;--red:#ef4444;--green:#22c55e;
+  --text:#e8d5c4;--muted:#8a7a6a;
+  --mono:'Share Tech Mono',monospace;--serif:'Cinzel',serif;
+  --body:'Crimson Text',serif;--elegant:'Cormorant Garamond',serif;--display:'Bebas Neue',cursive;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--gold)}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)}
+
+/* ── NAV BAR ── */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(6,3,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px}
+.navlogo{font-family:var(--serif);font-size:.85rem;letter-spacing:.25em;color:var(--gold);text-decoration:none;opacity:.9}
+.navlinks{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlink{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:2px;transition:color .2s,background .2s;white-space:nowrap}
+.navlink:hover{color:var(--gold)}
+.navlink.active{color:var(--gold);background:rgba(201,168,76,.08)}
+.navhome{font-family:var(--mono);font-size:9px;color:var(--purple2);letter-spacing:2px;text-decoration:none;padding:5px 10px;border:1px solid rgba(167,139,250,.3);border-radius:2px;transition:all .2s}
+.navhome:hover{background:rgba(167,139,250,.08)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--gold);transition:all .3s}
+.mobilemenu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,3,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);flex-direction:column;z-index:9998;padding:8px 0}
+.mobilemenu.open{display:flex}
+.mobilelink{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:10px 24px;transition:color .2s}
+.mobilelink:hover,.mobilelink.active{color:var(--gold)}
+.pagewrap{padding-top:52px;min-height:100vh}
+@media(max-width:700px){.navlinks{display:none}.hamburger{display:flex}}
+body{background:#08050d}
+.wrap{min-height:100vh;padding:90px 20px 80px;display:flex;align-items:flex-start;justify-content:center}
+.lorw{max-width:720px;width:100%}
+.lch{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:5px;text-align:center;margin-bottom:18px}
+.ltit{font-family:var(--serif);font-size:clamp(2rem,7vw,3.8rem);color:var(--text);text-align:center;letter-spacing:.08em;margin-bottom:14px;line-height:1.2}
+.ltit em{color:var(--gold);font-style:italic;font-family:var(--elegant)}
+.ldiv{display:flex;align-items:center;gap:18px;margin:28px 0 36px}
+.ldl{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.lp{font-family:var(--elegant);font-size:clamp(1rem,2.5vw,1.12rem);line-height:1.95;color:rgba(232,213,196,.83);text-align:justify;margin-bottom:26px;hyphens:auto}
+.lp em{color:var(--purple2);font-style:italic}
+.lp strong{color:var(--gold);font-weight:normal}
+.lpull{border-left:2px solid var(--gold);padding:14px 22px;margin:36px 0;font-family:var(--elegant);font-size:clamp(1.1rem,3vw,1.35rem);font-style:italic;color:var(--gold);background:rgba(201,168,76,.04)}
+.lptag{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:6px}
+</style></head><body>
+<nav class="topnav"></nav>
+<div class="mobilemenu" id="mobilemenu"></div>
+<div class="pagewrap"><div class="wrap"><div class="lorw">
+  <div class="lch">CHAPTER V &nbsp;·&nbsp; CHARACTER LORE</div>
+  <h2 class="ltit">Nihility's <em>Servant</em></h2>
+  <div class="ldiv"><div class="ldl"></div><span style="color:var(--gold)">✦</span><div class="ldl"></div></div>
+  <p class="lp">From the dying world of <strong>Petruges-V</strong> — a planet infected by a Stellaron where the very capacity for fear had been erased from its inhabitants — there emerged a woman who would come to embody something far more dangerous than fear itself. <em>Kafka</em>.</p>
+  <p class="lp">Born into a world where people know not the meaning of terror, Kafka became a <strong>Devil Hunter</strong>, pursuing the twisted pleasure-driven souls the Stellaron's influence had created. But dissatisfaction gnawed at her. The status quo offered no answers to the question she could never silence: <em>what is the true value of life?</em></p>
+  <div class="lpull">"Kafka knows not what fear is, yet she excels at instilling the deepest fear in her enemies."<div class="lptag">— INTERASTRAL PEACE CORPORATION INTELLIGENCE BRIEF</div></div>
+  <p class="lp">She found her answer — or perhaps only deeper questions — in <strong>Elio</strong>, the Destiny's Slave, whose script weaves futures with the precision of a loom. As one of Elio's most trusted agents, Kafka follows the script not out of blind devotion, but because it leads toward something she cannot yet name.</p>
+  <p class="lp">Her true weapon is language. <strong>Spirit Whisper</strong> works because she speaks the words people already want to hear. She doesn't manipulate so much as she <em>reveals</em> — like a spider who doesn't chase its prey but simply waits in a perfect web of understanding. <em>Few have ever escaped.</em></p>
+  <p class="lp">The Trailblazer — the vessel she chose, the being she implanted with a Stellaron — was not merely a mission. She taught them. Protected them. <em>Chose their name.</em> Whether this is part of Elio's script or something entirely her own remains, like Kafka herself, beautifully and deliberately unclear.</p>
+  <div class="ldiv"><div class="ldl"></div><span style="color:var(--gold)">🦋</span><div class="ldl"></div></div>
+</div></div></div>
+<script>const PAGES=[
+  {id:'01',label:'STELLARON HUNTER',file:'index.html'},
+  {id:'02',label:'DOSSIER',file:'02-dossier.html'},
+  {id:'03',label:'BUTTERFLY',file:'03-butterfly.html'},
+  {id:'04',label:'ECLIPSE ECHO',file:'04-quotes.html'},
+  {id:'05',label:"NIHILITY'S SERVANT",file:'05-lore.html'},
+  {id:'06',label:'TRACKER',file:'06-tracker.html'},
+  {id:'07',label:"NIH. DREAM",file:'07-dream.html'},
+  {id:'08',label:'WANTED',file:'08-wanted.html'},
+];
+function buildNav(activeFile){
+  const curr=PAGES.find(p=>p.file===activeFile)||PAGES[0];
+  document.querySelector('.topnav').innerHTML=`
+    <a class="navlogo" href="index.html">KAFKA</a>
+    <div class="navlinks">${PAGES.map(p=>`<a class="navlink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('')}</div>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  `;
+  const mm=document.createElement('div');
+  mm.className='mobilemenu';mm.id='mobilemenu';
+  mm.innerHTML=PAGES.map(p=>`<a class="mobilelink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  document.body.prepend(mm);
+}
+function toggleMenu(){document.getElementById('mobilemenu').classList.toggle('open')}buildNav('05-lore.html');</script>
+</body></html>

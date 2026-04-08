@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KAFKA — Nihility's Dream</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED STYLES ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060310;--gold:#c9a84c;--gold2:#f0d080;--purple:#7c3aed;--purple2:#a78bfa;
+  --neon:#f0abfc;--neon2:#c026d3;--cyan:#67e8f9;--red:#ef4444;--green:#22c55e;
+  --text:#e8d5c4;--muted:#8a7a6a;
+  --mono:'Share Tech Mono',monospace;--serif:'Cinzel',serif;
+  --body:'Crimson Text',serif;--elegant:'Cormorant Garamond',serif;--display:'Bebas Neue',cursive;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--gold)}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)}
+
+/* ── NAV BAR ── */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(6,3,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px}
+.navlogo{font-family:var(--serif);font-size:.85rem;letter-spacing:.25em;color:var(--gold);text-decoration:none;opacity:.9}
+.navlinks{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlink{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:2px;transition:color .2s,background .2s;white-space:nowrap}
+.navlink:hover{color:var(--gold)}
+.navlink.active{color:var(--gold);background:rgba(201,168,76,.08)}
+.navhome{font-family:var(--mono);font-size:9px;color:var(--purple2);letter-spacing:2px;text-decoration:none;padding:5px 10px;border:1px solid rgba(167,139,250,.3);border-radius:2px;transition:all .2s}
+.navhome:hover{background:rgba(167,139,250,.08)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--gold);transition:all .3s}
+.mobilemenu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,3,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);flex-direction:column;z-index:9998;padding:8px 0}
+.mobilemenu.open{display:flex}
+.mobilelink{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:10px 24px;transition:color .2s}
+.mobilelink:hover,.mobilelink.active{color:var(--gold)}
+.pagewrap{padding-top:52px;min-height:100vh}
+@media(max-width:700px){.navlinks{display:none}.hamburger{display:flex}}
+body{background:#000;overflow-x:hidden}
+.wrap{min-height:100vh;padding-top:52px}
+.dl{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;overflow:hidden;padding:60px 24px}
+.dl1{background:radial-gradient(ellipse at center,#0b0018 0%,#000007 100%)}
+.dl2{background:radial-gradient(ellipse at 25% 55%,#1b0034 0%,#04000d 80%,#000 100%)}
+.dl3{background:radial-gradient(ellipse at 75% 45%,#001c34 0%,#000510 80%,#000 100%)}
+.dgl{position:absolute;border-radius:50%;filter:blur(75px);pointer-events:none}
+.dt{font-family:var(--elegant);font-size:clamp(1.8rem,6vw,5rem);font-style:italic;text-align:center;line-height:1.3;position:relative;z-index:2}
+.dt.go{color:var(--gold);text-shadow:0 0 55px rgba(201,168,76,.28)}
+.dt.pu{color:var(--purple2);text-shadow:0 0 55px rgba(167,139,250,.28)}
+.dt.cy{color:var(--cyan);text-shadow:0 0 55px rgba(103,232,249,.28)}
+.dsub{font-family:var(--mono);font-size:9px;letter-spacing:5px;color:var(--muted);margin-top:18px;text-align:center;z-index:2;position:relative}
+.dk-end{font-family:var(--serif);font-size:clamp(1.5rem,5vw,2rem);color:var(--gold);letter-spacing:.35em;text-shadow:0 0 28px rgba(201,168,76,.3);margin-top:36px;position:relative;z-index:2}
+</style></head><body>
+<nav class="topnav"></nav>
+<div class="mobilemenu" id="mobilemenu"></div>
+<div class="wrap">
+  <div class="dl dl1">
+    <div class="dgl" style="width:380px;height:380px;background:radial-gradient(rgba(124,58,237,.2),transparent);top:20%;left:8%"></div>
+    <div class="dt go">In the beginning,<br>there was only darkness.</div>
+    <div class="dsub">NIHILITY'S DREAM &nbsp;·&nbsp; CHAPTER I</div>
+  </div>
+  <div class="dl dl2">
+    <div class="dgl" style="width:460px;height:280px;background:radial-gradient(rgba(201,168,76,.12),transparent);bottom:18%;right:8%"></div>
+    <div class="dt pu">Then she appeared —<br><em>calm as a void between stars.</em></div>
+    <div class="dsub">NIHILITY'S DREAM &nbsp;·&nbsp; CHAPTER II</div>
+  </div>
+  <div class="dl dl3">
+    <div class="dgl" style="width:380px;height:380px;background:radial-gradient(rgba(103,232,249,.1),transparent);top:28%;right:18%"></div>
+    <div class="dt cy">And the universe<br>held its breath.</div>
+    <div class="dsub">NIHILITY'S DREAM &nbsp;·&nbsp; CHAPTER III &nbsp;·&nbsp; THE END IS JUST ANOTHER BEGINNING</div>
+    <div class="dk-end">KAFKA</div>
+  </div>
+</div>
+<script>const PAGES=[
+  {id:'01',label:'STELLARON HUNTER',file:'index.html'},
+  {id:'02',label:'DOSSIER',file:'02-dossier.html'},
+  {id:'03',label:'BUTTERFLY',file:'03-butterfly.html'},
+  {id:'04',label:'ECLIPSE ECHO',file:'04-quotes.html'},
+  {id:'05',label:"NIHILITY'S SERVANT",file:'05-lore.html'},
+  {id:'06',label:'TRACKER',file:'06-tracker.html'},
+  {id:'07',label:"NIH. DREAM",file:'07-dream.html'},
+  {id:'08',label:'WANTED',file:'08-wanted.html'},
+];
+function buildNav(activeFile){
+  const curr=PAGES.find(p=>p.file===activeFile)||PAGES[0];
+  document.querySelector('.topnav').innerHTML=`
+    <a class="navlogo" href="index.html">KAFKA</a>
+    <div class="navlinks">${PAGES.map(p=>`<a class="navlink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('')}</div>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  `;
+  const mm=document.createElement('div');
+  mm.className='mobilemenu';mm.id='mobilemenu';
+  mm.innerHTML=PAGES.map(p=>`<a class="mobilelink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  document.body.prepend(mm);
+}
+function toggleMenu(){document.getElementById('mobilemenu').classList.toggle('open')}buildNav('07-dream.html');</script>
+</body></html>

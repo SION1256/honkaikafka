@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KAFKA — Dossier</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED STYLES ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060310;--gold:#c9a84c;--gold2:#f0d080;--purple:#7c3aed;--purple2:#a78bfa;
+  --neon:#f0abfc;--neon2:#c026d3;--cyan:#67e8f9;--red:#ef4444;--green:#22c55e;
+  --text:#e8d5c4;--muted:#8a7a6a;
+  --mono:'Share Tech Mono',monospace;--serif:'Cinzel',serif;
+  --body:'Crimson Text',serif;--elegant:'Cormorant Garamond',serif;--display:'Bebas Neue',cursive;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--gold)}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)}
+
+/* ── NAV BAR ── */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(6,3,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px}
+.navlogo{font-family:var(--serif);font-size:.85rem;letter-spacing:.25em;color:var(--gold);text-decoration:none;opacity:.9}
+.navlinks{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlink{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:2px;transition:color .2s,background .2s;white-space:nowrap}
+.navlink:hover{color:var(--gold)}
+.navlink.active{color:var(--gold);background:rgba(201,168,76,.08)}
+.navhome{font-family:var(--mono);font-size:9px;color:var(--purple2);letter-spacing:2px;text-decoration:none;padding:5px 10px;border:1px solid rgba(167,139,250,.3);border-radius:2px;transition:all .2s}
+.navhome:hover{background:rgba(167,139,250,.08)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--gold);transition:all .3s}
+.mobilemenu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,3,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);flex-direction:column;z-index:9998;padding:8px 0}
+.mobilemenu.open{display:flex}
+.mobilelink{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:10px 24px;transition:color .2s}
+.mobilelink:hover,.mobilelink.active{color:var(--gold)}
+.pagewrap{padding-top:52px;min-height:100vh}
+@media(max-width:700px){.navlinks{display:none}.hamburger{display:flex}}
+body{background:#020a04}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 20px 40px}
+.dos{max-width:880px;width:100%;position:relative}
+.dec-ov{position:fixed;inset:0;background:#020a04;z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;transition:opacity .8s}
+.dec-ov.gone{opacity:0;pointer-events:none}
+.dec-msg{font-family:var(--mono);font-size:12px;color:#00ff41;letter-spacing:3px;text-shadow:0 0 10px rgba(0,255,65,.7)}
+.dec-bar{width:280px;height:2px;background:rgba(0,255,65,.15);overflow:hidden}
+.dec-prog{height:100%;background:#00ff41;animation:decFill 2.4s ease-out forwards}
+@keyframes decFill{from{width:0}to{width:100%}}
+.dos-hd{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:1px solid rgba(0,255,65,.25);margin-bottom:24px;flex-wrap:wrap;gap:10px}
+.dos-logo{font-family:var(--mono);font-size:9px;color:rgba(0,255,65,.5);line-height:2}
+.dos-cls{font-family:var(--mono);font-size:22px;font-weight:700;color:#cc2200;border:2.5px solid #cc2200;padding:3px 12px;letter-spacing:4px;transform:rotate(-2deg);text-shadow:0 0 15px rgba(204,34,0,.5);flex-shrink:0}
+.dos-name{font-family:var(--mono);font-size:clamp(2rem,7vw,3.2rem);color:#00ff41;letter-spacing:.3em;text-shadow:0 0 20px rgba(0,255,65,.45);margin-bottom:6px}
+.dos-sub{font-family:var(--mono);font-size:9px;color:rgba(0,255,65,.4);letter-spacing:3px}
+.dos-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.dos-field{border:1px solid rgba(0,255,65,.18);padding:10px 14px;background:rgba(0,255,65,.025);position:relative}
+.dos-field::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:rgba(0,255,65,.4)}
+.flab{font-family:var(--mono);font-size:8px;color:rgba(0,255,65,.45);letter-spacing:3px;margin-bottom:4px}
+.fval{font-family:var(--mono);font-size:13px;color:#00ff41;text-shadow:0 0 6px rgba(0,255,65,.35)}
+.dos-skills{margin-top:20px;border:1px solid rgba(0,255,65,.18);padding:18px;background:rgba(0,255,65,.015)}
+.sklab{font-family:var(--mono);font-size:8px;color:rgba(0,255,65,.45);letter-spacing:4px;margin-bottom:14px}
+.sk{margin-bottom:10px}
+.sk-row{font-family:var(--mono);font-size:10px;color:#00ff41;display:flex;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:4px}
+.sk-track{height:3px;background:rgba(0,255,65,.1);border-radius:2px;overflow:hidden}
+.sk-fill{height:100%;background:linear-gradient(90deg,#00ff41,rgba(0,255,65,.4));border-radius:2px;animation:barFill 1.8s ease-out both;box-shadow:0 0 6px rgba(0,255,65,.4)}
+@keyframes barFill{from{width:0}}
+@media(max-width:600px){.dos-grid{grid-template-columns:1fr}}
+
+/* ── NAVIGATION FOOTER ── */
+.dos-nav{margin-top:40px;padding-top:24px;border-top:1px solid rgba(0,255,65,.18);display:grid;gap:8px}
+.nav-label{font-family:var(--mono);font-size:8px;color:rgba(0,255,65,.45);letter-spacing:3px;margin-bottom:12px}
+.nav-buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.nav-btn{font-family:var(--mono);font-size:9px;color:#020a04;background:#00ff41;border:none;padding:10px 12px;cursor:pointer;transition:all .3s;letter-spacing:2px;text-transform:uppercase;font-weight:600;text-decoration:none;display:inline-block;text-align:center}
+.nav-btn:hover{background:#7fff00;box-shadow:0 0 12px rgba(0,255,65,.6)}
+@media(max-width:600px){.nav-buttons{grid-template-columns:1fr}}
+
+/* ── PASSWORD PROTECTION ── */
+.pwd-ov{position:fixed;inset:0;background:#020a04;z-index:10001;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;backdrop-filter:blur(8px);transition:opacity .8s,visibility .8s}
+.pwd-ov.unlocked{opacity:0;visibility:hidden}
+.pwd-box{border:2px solid #00ff41;padding:30px;background:rgba(0,255,65,.02);text-align:center}
+.pwd-title{font-family:var(--mono);font-size:11px;color:rgba(0,255,65,.6);letter-spacing:3px;margin-bottom:20px}
+.pwd-label{font-family:var(--mono);font-size:10px;color:rgba(0,255,65,.5);letter-spacing:2px;margin-bottom:8px;display:block}
+.pwd-hint{font-family:var(--mono);font-size:9px;color:rgba(0,255,65,.35);letter-spacing:1px;margin-bottom:14px;display:block;font-style:italic}
+.pwd-input{background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.3);padding:10px 12px;font-family:var(--mono);font-size:12px;color:#00ff41;width:240px;letter-spacing:1px;transition:all .3s}
+.pwd-input:focus{outline:none;border-color:#00ff41;box-shadow:0 0 12px rgba(0,255,65,.4);background:rgba(0,255,65,.08)}
+.pwd-input::placeholder{color:rgba(0,255,65,.3)}
+.pwd-btn{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:#020a04;background:#00ff41;border:none;padding:10px 24px;cursor:pointer;transition:all .3s;text-transform:uppercase;font-weight:600;margin-top:12px}
+.pwd-btn:hover{box-shadow:0 0 16px rgba(0,255,65,.6)}
+.pwd-help{font-family:var(--mono);font-size:8px;letter-spacing:1px;color:rgba(0,255,65,.6);background:none;border:1px solid rgba(0,255,65,.3);padding:8px 12px;cursor:pointer;transition:all .3s;margin-top:16px;display:block}
+.pwd-help:hover{color:#00ff41;border-color:rgba(0,255,65,.6);box-shadow:0 0 10px rgba(0,255,65,.3)}
+.pwd-error{font-family:var(--mono);font-size:9px;color:#ff4444;letter-spacing:1px;min-height:14px;margin-top:8px}
+.pwd-nav{margin-top:20px;padding-top:20px;border-top:1px solid rgba(0,255,65,.18);display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pwd-navlink{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:rgba(0,255,65,.5);background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);padding:8px 10px;text-decoration:none;transition:all .3s;display:inline-block}
+.pwd-navlink:hover{color:#00ff41;background:rgba(0,255,65,.1);border-color:rgba(0,255,65,.5)}
+.redacted{position:relative;color:transparent;user-select:none}
+.redacted::before{content:'[REDACTED]';position:absolute;left:0;top:0;color:#cc2200;letter-spacing:2px;font-weight:600}
+.redacted.unlocked{color:#00ff41}
+.redacted.unlocked::before{content:''}
+
+</style></head><body>
+<nav class="topnav"></nav>
+<div class="mobilemenu" id="mobilemenu"></div>
+<div class="pwd-ov" id="pwdOv">
+  <div class="pwd-box">
+    <div class="pwd-title">RESTRICTED ACCESS — CLEARANCE REQUIRED</div>
+    <label class="pwd-label">ENTER AUTHORIZATION CODE:</label>
+    <div class="pwd-hint">HINT: SUBJECT'S DESIGNATION</div>
+    <input type="password" class="pwd-input" id="pwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')verifyPassword()">
+    <button class="pwd-btn" onclick="verifyPassword()">AUTHORIZE</button>
+    <div class="pwd-error" id="pwdErr"></div>
+    <button class="pwd-help" onclick="revealPassword()">Still struggling? How amusing... fine, I'll tell you</button>
+    <div class="pwd-nav" id="pwdNav"></div>
+  </div>
+</div>
+<div class="dec-ov" id="decOv">
+  <div class="dec-msg" id="decMsg">ACCESSING CLASSIFIED DATABASE...</div>
+  <div class="dec-bar"><div class="dec-prog"></div></div>
+</div>
+<div class="pagewrap"><div class="wrap"><div class="dos">
+  <div class="dos-hd">
+    <div class="dos-logo">INTERASTRAL PEACE CORPORATION<br>INTEL DATABASE — NODE 7734<br>CLEARANCE LEVEL : ALPHA<br><span style="color:rgba(0,255,65,.3)">LAST UPDATED : [REDACTED]</span></div>
+    <div class="dos-cls">CLASSIFIED</div>
+  </div>
+  <div class="dos-name">K A F K A</div>
+  <div class="dos-sub">FILE NO. SH-001 &nbsp;·&nbsp; STELLARON HUNTER &nbsp;·&nbsp; WANTED STATUS : ACTIVE</div>
+  <div class="dos-grid">
+    <div class="dos-field"><div class="flab">DESIGNATION</div><div class="fval">KAFKA</div></div>
+    <div class="dos-field"><div class="flab">ELEMENT / PATH</div><div class="fval redacted">⚡ LIGHTNING · NIHILITY</div></div>
+    <div class="dos-field"><div class="flab">RARITY CLASS</div><div class="fval">★★★★★ — 5 STAR</div></div>
+    <div class="dos-field"><div class="flab">FACTION</div><div class="fval redacted">STELLARON HUNTERS</div></div>
+    <div class="dos-field"><div class="flab">ORIGIN PLANET</div><div class="fval redacted">PETRUGES-V</div></div>
+    <div class="dos-field"><div class="flab">SIGNATURE ABILITY</div><div class="fval redacted">SPIRIT WHISPER</div></div>
+    <div class="dos-field" style="grid-column:span 2"><div class="flab">COMBAT SPECIALTY</div><div class="fval redacted">DAMAGE OVER TIME · DOT DETONATION · LIGHTNING SHOCK · FOLLOW-UP ATTACKS</div></div>
+  </div>
+  <div class="dos-skills">
+    <div class="sklab">SKILL ASSESSMENT — COMBAT PROFICIENCY INDEX</div>
+    <div class="sk"><div class="sk-row"><span>MIDNIGHT TUMULT (BASIC ATK)</span><span>SINGLE TARGET · 100% ATK</span></div><div class="sk-track"><div class="sk-fill" style="width:58%"></div></div></div>
+    <div class="sk"><div class="sk-row"><span>CARESSING MOONLIGHT (SKILL)</span><span>DOT DETONATE · 160% ATK</span></div><div class="sk-track"><div class="sk-fill" style="width:82%;animation-delay:.2s"></div></div></div>
+    <div class="sk"><div class="sk-row"><span>TWILIGHT TRILL (ULTIMATE)</span><span>AOE SHOCK · 120% DETONATE</span></div><div class="sk-track"><div class="sk-fill" style="width:94%;animation-delay:.4s"></div></div></div>
+    <div class="sk"><div class="sk-row"><span>GENTLE BUT CRUEL (TALENT)</span><span>FOLLOW-UP · 80% DETONATE</span></div><div class="sk-track"><div class="sk-fill" style="width:88%;animation-delay:.6s"></div></div></div>
+    <div class="sk"><div class="sk-row"><span>SPIRIT WHISPER (PASSIVE)</span><span style="color:#cc2200">LEVEL : CLASSIFIED</span></div><div class="sk-track"><div class="sk-fill" style="width:100%;animation-delay:.8s;background:linear-gradient(90deg,#00ff41,#cc2200)"></div></div></div>
+  </div>
+  <div class="dos-nav">
+    <div class="nav-label">NAVIGATE TO OTHER SECTORS:</div>
+    <div class="nav-buttons" id="navButtons"></div>
+  </div>
+</div></div></div>
+<script>
+const PAGES=[
+  {id:'01',label:'STELLARON HUNTER',file:'index.html'},
+  {id:'02',label:'DOSSIER',file:'02-dossier.html'},
+  {id:'03',label:'BUTTERFLY',file:'03-butterfly.html'},
+  {id:'04',label:'ECLIPSE ECHO',file:'04-quotes.html'},
+  {id:'05',label:"NIHILITY'S SERVANT",file:'05-lore.html'},
+  {id:'06',label:'TRACKER',file:'06-tracker.html'},
+  {id:'07',label:"NIH. DREAM",file:'07-dream.html'},
+  {id:'08',label:'WANTED',file:'08-wanted.html'},
+];
+const CORRECT_PASSWORD='KAFKA';
+function verifyPassword(){
+  const input=document.getElementById('pwdInput').value.toUpperCase();
+  const errEl=document.getElementById('pwdErr');
+  if(input===CORRECT_PASSWORD){
+    errEl.textContent='';
+    document.getElementById('pwdOv').classList.add('unlocked');
+    document.querySelectorAll('.redacted').forEach(el=>el.classList.add('unlocked'));
+  }else{
+    errEl.textContent='⚠ AUTHORIZATION FAILED — INVALID CODE';
+  }
+}
+function revealPassword(){
+  document.getElementById('pwdInput').value=CORRECT_PASSWORD;
+  verifyPassword();
+}
+function buildNav(activeFile){
+  const curr=PAGES.find(p=>p.file===activeFile)||PAGES[0];
+  document.querySelector('.topnav').innerHTML=`
+    <a class="navlogo" href="index.html">KAFKA</a>
+    <div class="navlinks">${PAGES.map(p=>`<a class="navlink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('')}</div>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  `;
+  const mm=document.createElement('div');
+  mm.className='mobilemenu';mm.id='mobilemenu';
+  mm.innerHTML=PAGES.map(p=>`<a class="mobilelink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  document.body.prepend(mm);
+}
+function buildFooterNav(){
+  const navContainer=document.getElementById('navButtons');
+  if(navContainer){
+    navContainer.innerHTML=PAGES.map(p=>`<a class="nav-btn" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  }
+}
+function buildPasswordNav(){
+  const pwdNav=document.getElementById('pwdNav');
+  if(pwdNav){
+    pwdNav.innerHTML=PAGES.filter(p=>p.file!=='02-dossier.html').map(p=>`<a class="pwd-navlink" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  }
+}
+function toggleMenu(){document.getElementById('mobilemenu').classList.toggle('open')}
+buildNav('02-dossier.html');
+buildFooterNav();
+buildPasswordNav();
+setTimeout(()=>{
+  const ov=document.getElementById('decOv'),msg=document.getElementById('decMsg');
+  const msgs=['ACCESSING CLASSIFIED DATABASE...','VERIFYING CLEARANCE LEVEL ALPHA...','DECRYPTING FILE SH-001...','ACCESS GRANTED.'];
+  let i=0;const iv=setInterval(()=>{i++;if(i<msgs.length){msg.textContent=msgs[i];}else{clearInterval(iv);setTimeout(()=>ov.classList.add('gone'),400);}},620);
+},400);
+</script>
+</body></html>

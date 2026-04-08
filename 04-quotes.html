@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KAFKA — Eclipse Echo~</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED STYLES ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060310;--gold:#c9a84c;--gold2:#f0d080;--purple:#7c3aed;--purple2:#a78bfa;
+  --neon:#f0abfc;--neon2:#c026d3;--cyan:#67e8f9;--red:#ef4444;--green:#22c55e;
+  --text:#e8d5c4;--muted:#8a7a6a;
+  --mono:'Share Tech Mono',monospace;--serif:'Cinzel',serif;
+  --body:'Crimson Text',serif;--elegant:'Cormorant Garamond',serif;--display:'Bebas Neue',cursive;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--gold)}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)}
+
+/* ── NAV BAR ── */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(6,3,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px}
+.navlogo{font-family:var(--serif);font-size:.85rem;letter-spacing:.25em;color:var(--gold);text-decoration:none;opacity:.9}
+.navlinks{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlink{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:2px;transition:color .2s,background .2s;white-space:nowrap}
+.navlink:hover{color:var(--gold)}
+.navlink.active{color:var(--gold);background:rgba(201,168,76,.08)}
+.navhome{font-family:var(--mono);font-size:9px;color:var(--purple2);letter-spacing:2px;text-decoration:none;padding:5px 10px;border:1px solid rgba(167,139,250,.3);border-radius:2px;transition:all .2s}
+.navhome:hover{background:rgba(167,139,250,.08)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--gold);transition:all .3s}
+.mobilemenu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,3,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);flex-direction:column;z-index:9998;padding:8px 0}
+.mobilemenu.open{display:flex}
+.mobilelink{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:10px 24px;transition:color .2s}
+.mobilelink:hover,.mobilelink.active{color:var(--gold)}
+.pagewrap{padding-top:52px;min-height:100vh}
+@media(max-width:700px){.navlinks{display:none}.hamburger{display:flex}}
+body{background:linear-gradient(160deg,#0f0522,#1a0a32);background-attachment:fixed}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 20px 60px}
+.s4w{max-width:780px;width:100%;text-align:center}
+.s4t{font-family:var(--serif);font-size:clamp(2rem,7vw,3.8rem);color:var(--neon);letter-spacing:.08em;margin-bottom:6px;text-shadow:0 0 30px rgba(240,171,252,.4)}
+.s4s{font-family:var(--elegant);font-size:.95rem;color:var(--purple2);font-style:italic;margin-bottom:44px;letter-spacing:2px}
+.qbox{border:1px solid rgba(240,171,252,.25);padding:36px 28px;margin-bottom:24px;position:relative;background:rgba(240,171,252,.025);min-height:110px;display:flex;align-items:center;justify-content:center}
+.qbox::before{content:'"';position:absolute;top:-16px;left:16px;font-family:var(--elegant);font-size:72px;color:rgba(240,171,252,.18);line-height:1}
+.qt{font-family:var(--elegant);font-size:clamp(1rem,2.5vw,1.45rem);font-style:italic;color:var(--text);line-height:1.7;transition:opacity .3s}
+.qbtn{background:transparent;border:1px solid var(--neon);color:var(--neon);font-family:var(--mono);font-size:10px;letter-spacing:3px;padding:11px 28px;cursor:pointer;transition:all .3s;margin-bottom:44px}
+.qbtn:hover{background:rgba(240,171,252,.08);box-shadow:0 0 18px rgba(240,171,252,.3)}
+.cdbox{border:1px solid rgba(240,171,252,.18);padding:28px;margin-bottom:28px;background:rgba(240,171,252,.015)}
+.cdtit{font-family:var(--mono);font-size:8px;color:rgba(240,171,252,.45);letter-spacing:4px;margin-bottom:14px}
+.cdnums{display:flex;justify-content:center;gap:clamp(10px,4vw,28px);flex-wrap:wrap}
+.cdu{text-align:center;min-width:55px}
+.cdn{font-family:var(--serif);font-size:clamp(1.5rem,6vw,3rem);color:var(--neon);text-shadow:0 0 18px rgba(240,171,252,.5);display:block}
+.cdl{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:2px}
+.tierbox{border:1px solid rgba(240,171,252,.18);padding:18px;background:rgba(240,171,252,.015);text-align:left}
+.tiertit{font-family:var(--mono);font-size:8px;color:rgba(240,171,252,.45);letter-spacing:4px;margin-bottom:14px}
+.tierrow{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.tl{font-family:var(--mono);font-size:13px;font-weight:700;width:28px;min-width:28px;text-align:center;padding:3px}
+.ts{color:#ff6b6b;background:rgba(255,107,107,.1)}
+.ta{color:#ffd93d;background:rgba(255,217,61,.1)}
+.tb{color:#6bcb77;background:rgba(107,203,119,.1)}
+.tis{display:flex;gap:7px;flex-wrap:wrap}
+.ti{font-family:var(--mono);font-size:9px;color:var(--text);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:3px 9px;border-radius:2px}
+</style></head><body>
+<nav class="topnav"></nav>
+<div class="mobilemenu" id="mobilemenu"></div>
+<div class="pagewrap"><div class="wrap"><div class="s4w">
+  <div class="s4t">Eclipse Echo~ ♪</div>
+  <div class="s4s">interactive fun &nbsp;·&nbsp; quotes &nbsp;·&nbsp; countdown &nbsp;·&nbsp; tier list</div>
+  <div class="qbox"><div class="qt" id="qText">"You won't remember a thing except me."</div></div>
+  <button class="qbtn" onclick="nextQ()">✦ &nbsp; NEXT KAFKA QUOTE &nbsp; ✦</button>
+  <div class="cdbox">
+    <div class="cdtit">⏳ &nbsp; MENUNGGU RERUN KAFKA — COUNTDOWN</div>
+    <div class="cdnums">
+      <div class="cdu"><span class="cdn" id="cdd">00</span><span class="cdl">DAYS</span></div>
+      <div class="cdu"><span class="cdn" id="cdh">00</span><span class="cdl">HOURS</span></div>
+      <div class="cdu"><span class="cdn" id="cdm">00</span><span class="cdl">MINS</span></div>
+      <div class="cdu"><span class="cdn" id="cds">00</span><span class="cdl">SECS</span></div>
+    </div>
+  </div>
+  <div class="tierbox">
+    <div class="tiertit">⚡ &nbsp; KAFKA SKILL TIER LIST</div>
+    <div class="tierrow"><div class="tl ts">S</div><div class="tis"><div class="ti">Ultimate (AOE Shock)</div><div class="ti">Talent (Follow-up)</div><div class="ti">Spirit Whisper</div><div class="ti">DOT Detonation</div></div></div>
+    <div class="tierrow"><div class="tl ta">A</div><div class="tis"><div class="ti">Caressing Moonlight</div><div class="ti">Team Synergy</div><div class="ti">E1 Eidolon</div></div></div>
+    <div class="tierrow"><div class="tl tb">B</div><div class="tis"><div class="ti">Midnight Tumult</div><div class="ti">Basic ATK</div></div></div>
+  </div>
+</div></div></div>
+<script>
+const PAGES=[
+  {id:'01',label:'STELLARON HUNTER',file:'index.html'},
+  {id:'02',label:'DOSSIER',file:'02-dossier.html'},
+  {id:'03',label:'BUTTERFLY',file:'03-butterfly.html'},
+  {id:'04',label:'ECLIPSE ECHO',file:'04-quotes.html'},
+  {id:'05',label:"NIHILITY'S SERVANT",file:'05-lore.html'},
+  {id:'06',label:'TRACKER',file:'06-tracker.html'},
+  {id:'07',label:"NIH. DREAM",file:'07-dream.html'},
+  {id:'08',label:'WANTED',file:'08-wanted.html'},
+];
+function buildNav(activeFile){
+  const curr=PAGES.find(p=>p.file===activeFile)||PAGES[0];
+  document.querySelector('.topnav').innerHTML=`
+    <a class="navlogo" href="index.html">KAFKA</a>
+    <div class="navlinks">${PAGES.map(p=>`<a class="navlink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('')}</div>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  `;
+  const mm=document.createElement('div');
+  mm.className='mobilemenu';mm.id='mobilemenu';
+  mm.innerHTML=PAGES.map(p=>`<a class="mobilelink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  document.body.prepend(mm);
+}
+function toggleMenu(){document.getElementById('mobilemenu').classList.toggle('open')}
+buildNav('04-tempe.html');
+const quotes=["You won't remember a thing except me.","Patience is all you need.","Everyone has their own melody... Mine just happens to be played in the dark.","I never force anyone. I simply help them hear what they already wanted.","A spider doesn't chase its prey. It simply waits — and weaves.","Eclipse echo~ ♪  ...Did I surprise you?","Even the longest night yields to dawn. But I've always preferred the night.","You're interesting. Most people bore me after the first five minutes.","Fear is such a waste of a perfectly good emotion.","The script has already been written. We're simply following the story.","Smile. It makes them wonder what you're thinking."];
+let qi=0;
+function nextQ(){const el=document.getElementById('qText');el.style.opacity='0';setTimeout(()=>{qi=(qi+1)%quotes.length;el.textContent='"'+quotes[qi]+'"';el.style.opacity='1';},280);}
+const rerun=new Date('2026-07-21T10:00:00');
+function updateCD(){const now=new Date(),diff=rerun-now;if(diff<=0)return;const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);document.getElementById('cdd').textContent=String(d).padStart(2,'0');document.getElementById('cdh').textContent=String(h).padStart(2,'0');document.getElementById('cdm').textContent=String(m).padStart(2,'0');document.getElementById('cds').textContent=String(s).padStart(2,'0');}
+updateCD();setInterval(updateCD,1000);
+</script>
+</body></html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KAFKA — The Stellaron Hunter</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED STYLES ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060310;--gold:#c9a84c;--gold2:#f0d080;--purple:#7c3aed;--purple2:#a78bfa;
+  --neon:#f0abfc;--neon2:#c026d3;--cyan:#67e8f9;--red:#ef4444;--green:#22c55e;
+  --text:#e8d5c4;--muted:#8a7a6a;
+  --mono:'Share Tech Mono',monospace;--serif:'Cinzel',serif;
+  --body:'Crimson Text',serif;--elegant:'Cormorant Garamond',serif;--display:'Bebas Neue',cursive;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--gold)}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)}
+
+/* ── NAV BAR ── */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(6,3,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px}
+.navlogo{font-family:var(--serif);font-size:.85rem;letter-spacing:.25em;color:var(--gold);text-decoration:none;opacity:.9}
+.navlinks{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlink{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:2px;transition:color .2s,background .2s;white-space:nowrap}
+.navlink:hover{color:var(--gold)}
+.navlink.active{color:var(--gold);background:rgba(201,168,76,.08)}
+.navhome{font-family:var(--mono);font-size:9px;color:var(--purple2);letter-spacing:2px;text-decoration:none;padding:5px 10px;border:1px solid rgba(167,139,250,.3);border-radius:2px;transition:all .2s}
+.navhome:hover{background:rgba(167,139,250,.08)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--gold);transition:all .3s}
+.mobilemenu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,3,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);flex-direction:column;z-index:9998;padding:8px 0}
+.mobilemenu.open{display:flex}
+.mobilelink{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:10px 24px;transition:color .2s}
+.mobilelink:hover,.mobilelink.active{color:var(--gold)}
+.pagewrap{padding-top:52px;min-height:100vh}
+@media(max-width:700px){.navlinks{display:none}.hamburger{display:flex}}
+#s1{min-height:100vh;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+#starCanvas{position:absolute;inset:0;width:100%;height:100%}
+.nebula{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+.n1{width:600px;height:400px;background:radial-gradient(ellipse,rgba(124,58,237,.18),transparent 70%);top:15%;left:5%}
+.n2{width:500px;height:500px;background:radial-gradient(ellipse,rgba(201,168,76,.07),transparent 70%);bottom:10%;right:10%}
+.n3{width:300px;height:300px;background:radial-gradient(ellipse,rgba(240,171,252,.06),transparent 70%);top:40%;right:20%}
+.s1c{position:relative;z-index:2;text-align:center;padding:20px}
+.s1tag{font-family:var(--mono);font-size:10px;letter-spacing:7px;color:var(--gold);opacity:.7;margin-bottom:16px;animation:fadeUp 1s .4s both}
+.s1name{font-family:var(--serif);font-size:clamp(4rem,16vw,11rem);font-weight:900;letter-spacing:.22em;line-height:1;background:linear-gradient(135deg,var(--gold) 0%,#fff8e7 40%,var(--gold) 65%,#b8860b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:revealName 2.2s .7s both}
+.s1line{width:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:20px auto;animation:lineGrow 1s 1.8s both}
+.s1sub{font-family:var(--elegant);font-size:clamp(.85rem,2vw,1.3rem);letter-spacing:4px;color:var(--purple2);font-style:italic;animation:fadeUp 1s 2s both}
+.s1scroll{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--muted);margin-top:36px;animation:fadeUp 1s 2.5s both,blink 2s 3.5s infinite}
+.s1nav{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:44px;animation:fadeUp 1s 2.8s both;position:relative;z-index:2}
+.s1btn{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:8px 14px;border:1px solid rgba(201,168,76,.2);border-radius:2px;transition:all .3s}
+.s1btn:hover{color:var(--gold);border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.05)}
+@keyframes revealName{from{opacity:0;letter-spacing:.7em;filter:blur(12px)}to{opacity:1;letter-spacing:.22em;filter:blur(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lineGrow{from{width:0;opacity:0}to{width:130px;opacity:1}}
+@keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
+</style></head><body>
+<nav class="topnav"></nav>
+<div class="mobilemenu" id="mobilemenu"></div>
+<div class="pagewrap">
+<section id="s1">
+  <canvas id="starCanvas"></canvas>
+  <div class="nebula n1"></div><div class="nebula n2"></div><div class="nebula n3"></div>
+  <div class="s1c">
+    <div class="s1tag">STELLARON HUNTERS &nbsp;·&nbsp; PATH OF NIHILITY &nbsp;·&nbsp; HSR</div>
+    <h1 class="s1name">KAFKA</h1>
+    <div class="s1line"></div>
+    <div class="s1sub">calm &nbsp;·&nbsp; collected &nbsp;·&nbsp; beautiful &nbsp;·&nbsp; dangerous</div>
+    <div class="s1scroll">↓ &nbsp; explore the pages below &nbsp; ↓</div>
+    <div class="s1nav">
+      <a class="s1btn" href="02-dossier.html">02 · DOSSIER</a>
+      <a class="s1btn" href="03-butterfly.html">03 · BUTTERFLY</a>
+      <a class="s1btn" href="04-quotes.html">04 · ECLIPSE ECHO~</a>
+      <a class="s1btn" href="05-lore.html">05 · LORE</a>
+      
+      <a class="s1btn" href="06-tracker.html">06 · TRACKER</a>
+      <a class="s1btn" href="07-dream.html">07 · DREAM</a>
+      <a class="s1btn" href="08-wanted.html">08 · WANTED</a>
+    </div>
+  </div>
+</section>
+</div>
+<script>
+const PAGES=[
+  {id:'01',label:'STELLARON HUNTER',file:'index.html'},
+  {id:'02',label:'DOSSIER',file:'02-dossier.html'},
+  {id:'03',label:'BUTTERFLY',file:'03-butterfly.html'},
+  {id:'04',label:'ECLIPSE ECHO',file:'04-quotes.html'},
+  {id:'05',label:"NIHILITY'S SERVANT",file:'05-lore.html'},
+  {id:'06',label:'TRACKER',file:'06-tracker.html'},
+  {id:'07',label:"NIH. DREAM",file:'07-dream.html'},
+  {id:'08',label:'WANTED',file:'08-wanted.html'},
+];
+function buildNav(activeFile){
+  const curr=PAGES.find(p=>p.file===activeFile)||PAGES[0];
+  document.querySelector('.topnav').innerHTML=`
+    <a class="navlogo" href="index.html">KAFKA</a>
+    <div class="navlinks">${PAGES.map(p=>`<a class="navlink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('')}</div>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  `;
+  const mm=document.createElement('div');
+  mm.className='mobilemenu';mm.id='mobilemenu';
+  mm.innerHTML=PAGES.map(p=>`<a class="mobilelink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  document.body.prepend(mm);
+}
+function toggleMenu(){document.getElementById('mobilemenu').classList.toggle('open')}
+buildNav('index.html');
+const cv=document.getElementById('starCanvas'),cx=cv.getContext('2d');let stars=[];
+function initS(){cv.width=window.innerWidth;cv.height=window.innerHeight;stars=Array.from({length:240},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.5+.3,spd:Math.random()*.25+.05,op:Math.random()*.75+.2,tw:Math.random()*Math.PI*2}))}
+function drawS(){cx.clearRect(0,0,cv.width,cv.height);stars.forEach(s=>{s.tw+=.018;const a=s.op*(.65+.35*Math.sin(s.tw));cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fillStyle=`rgba(255,240,200,${a})`;cx.fill();s.y-=s.spd;if(s.y<0){s.y=cv.height;s.x=Math.random()*cv.width;}});requestAnimationFrame(drawS)}
+initS();drawS();window.addEventListener('resize',initS);
+</script>
+</body></html>

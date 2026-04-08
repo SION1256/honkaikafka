@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KAFKA — Butterfly Effect</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED STYLES ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060310;--gold:#c9a84c;--gold2:#f0d080;--purple:#7c3aed;--purple2:#a78bfa;
+  --neon:#f0abfc;--neon2:#c026d3;--cyan:#67e8f9;--red:#ef4444;--green:#22c55e;
+  --text:#e8d5c4;--muted:#8a7a6a;
+  --mono:'Share Tech Mono',monospace;--serif:'Cinzel',serif;
+  --body:'Crimson Text',serif;--elegant:'Cormorant Garamond',serif;--display:'Bebas Neue',cursive;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--gold)}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)}
+
+/* ── NAV BAR ── */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(6,3,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px}
+.navlogo{font-family:var(--serif);font-size:.85rem;letter-spacing:.25em;color:var(--gold);text-decoration:none;opacity:.9}
+.navlinks{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlink{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:2px;transition:color .2s,background .2s;white-space:nowrap}
+.navlink:hover{color:var(--gold)}
+.navlink.active{color:var(--gold);background:rgba(201,168,76,.08)}
+.navhome{font-family:var(--mono);font-size:9px;color:var(--purple2);letter-spacing:2px;text-decoration:none;padding:5px 10px;border:1px solid rgba(167,139,250,.3);border-radius:2px;transition:all .2s}
+.navhome:hover{background:rgba(167,139,250,.08)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--gold);transition:all .3s}
+.mobilemenu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,3,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);flex-direction:column;z-index:9998;padding:8px 0}
+.mobilemenu.open{display:flex}
+.mobilelink{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:10px 24px;transition:color .2s}
+.mobilelink:hover,.mobilelink.active{color:var(--gold)}
+.pagewrap{padding-top:52px;min-height:100vh}
+@media(max-width:700px){.navlinks{display:none}.hamburger{display:flex}}
+body{background:linear-gradient(155deg,#0d0012 0%,#1a0032 50%,#0a0010 100%);background-attachment:fixed}
+.wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 60px;position:relative;overflow:hidden}
+.s3t{font-family:var(--serif);font-size:clamp(2rem,7vw,4.5rem);text-align:center;margin-bottom:6px;background:linear-gradient(135deg,var(--gold),var(--purple2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.15em}
+.s3s{font-family:var(--elegant);font-size:.95rem;color:var(--purple2);font-style:italic;text-align:center;letter-spacing:3px;margin-bottom:44px}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1000px;width:100%}
+.gc{border-radius:3px;position:relative;overflow:hidden;cursor:pointer;border:1px solid rgba(168,85,247,.2);transition:transform .4s,box-shadow .4s;aspect-ratio:3/4}
+.gc:first-child{grid-row:span 2;aspect-ratio:auto}
+.gc:hover{transform:translateY(-4px);box-shadow:0 16px 50px rgba(168,85,247,.3),0 0 25px rgba(201,168,76,.1)}
+.gc-bg{position:absolute;inset:0}
+.gc:nth-child(1) .gc-bg{background:linear-gradient(135deg,#1a0038,#3d0070,#0d001c)}
+.gc:nth-child(2) .gc-bg{background:linear-gradient(135deg,#0d0522,#2d1062,#060310)}
+.gc:nth-child(3) .gc-bg{background:linear-gradient(135deg,#1a0824,#4a0062,#0a0016)}
+.gc:nth-child(4) .gc-bg{background:linear-gradient(135deg,#0a0016,#300052,#150022)}
+.gc:nth-child(5) .gc-bg{background:linear-gradient(135deg,#15002c,#3a005a,#050012)}
+.gc-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:64px;opacity:.18;transition:opacity .4s;animation:sway 4s ease-in-out infinite}
+.gc:hover .gc-icon{opacity:.45;filter:drop-shadow(0 0 24px rgba(201,168,76,.8))}
+.gc-lab{position:absolute;bottom:0;left:0;right:0;padding:18px 14px 14px;background:linear-gradient(transparent,rgba(0,0,0,.9));transform:translateY(100%);transition:transform .4s;font-family:var(--serif);font-size:11px;letter-spacing:2px;color:var(--gold)}
+.gc:hover .gc-lab{transform:translateY(0)}
+.gc-num{position:absolute;top:10px;left:10px;font-family:var(--mono);font-size:8px;color:rgba(168,85,247,.5);letter-spacing:2px}
+.gc-hero{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;z-index:2;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+.fbt{position:absolute;opacity:.22;pointer-events:none;animation:floatBt linear infinite;filter:drop-shadow(0 0 5px rgba(168,85,247,.7))}
+@keyframes sway{0%,100%{transform:translate(-50%,-50%) rotate(-5deg) scale(1)}50%{transform:translate(-50%,-50%) rotate(5deg) scale(1.06)}}
+@keyframes floatBt{0%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(28px,-38px) rotate(8deg)}50%{transform:translate(55px,0) rotate(-4deg)}75%{transform:translate(28px,38px) rotate(8deg)}100%{transform:translate(0,0) rotate(0deg)}}
+@media(max-width:650px){.gal{grid-template-columns:1fr 1fr}.gc:first-child{grid-row:span 1;aspect-ratio:3/4}}
+</style></head><body>
+<nav class="topnav"></nav>
+<div class="mobilemenu" id="mobilemenu"></div>
+<div class="wrap">
+  <div class="fbt" style="top:8%;left:4%;animation-duration:9s;font-size:22px">🦋</div>
+  <div class="fbt" style="top:18%;right:6%;animation-duration:12s;animation-delay:2s;font-size:14px">🦋</div>
+  <div class="fbt" style="bottom:14%;left:8%;animation-duration:10s;animation-delay:1s;font-size:26px">🦋</div>
+  <div class="fbt" style="top:55%;right:4%;animation-duration:14s;animation-delay:3s;font-size:16px">🦋</div>
+  <div class="s3t">BUTTERFLY EFFECT</div>
+  <div class="s3s">fan gallery &nbsp;·&nbsp; aesthetic showcase &nbsp;·&nbsp; 蝶の効果</div>
+  <div class="gal">
+    <div class="gc"><div class="gc-bg"></div><div class="gc-icon">🦋</div><div class="gc-num">01</div>
+      <div class="gc-hero"><div style="font-family:var(--serif);font-size:1.05rem;color:var(--gold);letter-spacing:3px">KAFKA</div><div style="font-family:var(--mono);font-size:8px;color:var(--purple2);letter-spacing:2px;margin-top:3px">STELLARON HUNTER</div><div style="font-family:var(--elegant);font-size:.82rem;font-style:italic;color:rgba(232,213,196,.65);margin-top:7px;line-height:1.5">"You won't remember<br>a thing except me."</div></div>
+    </div>
+    <div class="gc"><div class="gc-bg"></div><div class="gc-icon" style="font-size:52px;animation-delay:1s">✦</div><div class="gc-num">02</div><div class="gc-lab">PATH OF NIHILITY</div></div>
+    <div class="gc"><div class="gc-bg"></div><div class="gc-icon" style="font-size:52px;animation-delay:2s">⚡</div><div class="gc-num">03</div><div class="gc-lab">LIGHTNING SHOCK</div></div>
+    <div class="gc"><div class="gc-bg"></div><div class="gc-icon" style="font-size:50px;animation-delay:.5s">🕷️</div><div class="gc-num">04</div><div class="gc-lab">SPIRIT WHISPER</div></div>
+    <div class="gc"><div class="gc-bg"></div><div class="gc-icon" style="font-size:50px;animation-delay:1.5s">🌙</div><div class="gc-num">05</div><div class="gc-lab">MIDNIGHT TUMULT</div></div>
+  </div>
+</div>
+<script>const PAGES=[
+  {id:'01',label:'STELLARON HUNTER',file:'index.html'},
+  {id:'02',label:'DOSSIER',file:'02-dossier.html'},
+  {id:'03',label:'BUTTERFLY',file:'03-butterfly.html'},
+  {id:'04',label:'ECLIPSE ECHO',file:'04-quotes.html'},
+  {id:'05',label:"NIHILITY'S SERVANT",file:'05-lore.html'},
+  {id:'06',label:'TRACKER',file:'06-tracker.html'},
+  {id:'07',label:"NIH. DREAM",file:'07-dream.html'},
+  {id:'08',label:'WANTED',file:'08-wanted.html'},
+];
+function buildNav(activeFile){
+  const curr=PAGES.find(p=>p.file===activeFile)||PAGES[0];
+  document.querySelector('.topnav').innerHTML=`
+    <a class="navlogo" href="index.html">KAFKA</a>
+    <div class="navlinks">${PAGES.map(p=>`<a class="navlink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('')}</div>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  `;
+  const mm=document.createElement('div');
+  mm.className='mobilemenu';mm.id='mobilemenu';
+  mm.innerHTML=PAGES.map(p=>`<a class="mobilelink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  document.body.prepend(mm);
+}
+function toggleMenu(){document.getElementById('mobilemenu').classList.toggle('open')}buildNav('03-butterfly.html');</script>
+</body></html>

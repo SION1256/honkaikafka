@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KAFKA — Stellaron Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED STYLES ── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060310;--gold:#c9a84c;--gold2:#f0d080;--purple:#7c3aed;--purple2:#a78bfa;
+  --neon:#f0abfc;--neon2:#c026d3;--cyan:#67e8f9;--red:#ef4444;--green:#22c55e;
+  --text:#e8d5c4;--muted:#8a7a6a;
+  --mono:'Share Tech Mono',monospace;--serif:'Cinzel',serif;
+  --body:'Crimson Text',serif;--elegant:'Cormorant Garamond',serif;--display:'Bebas Neue',cursive;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--gold)}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)}
+
+/* ── NAV BAR ── */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(6,3,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px}
+.navlogo{font-family:var(--serif);font-size:.85rem;letter-spacing:.25em;color:var(--gold);text-decoration:none;opacity:.9}
+.navlinks{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlink{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:2px;transition:color .2s,background .2s;white-space:nowrap}
+.navlink:hover{color:var(--gold)}
+.navlink.active{color:var(--gold);background:rgba(201,168,76,.08)}
+.navhome{font-family:var(--mono);font-size:9px;color:var(--purple2);letter-spacing:2px;text-decoration:none;padding:5px 10px;border:1px solid rgba(167,139,250,.3);border-radius:2px;transition:all .2s}
+.navhome:hover{background:rgba(167,139,250,.08)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.hamburger span{width:20px;height:1.5px;background:var(--gold);transition:all .3s}
+.mobilemenu{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(6,3,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.15);flex-direction:column;z-index:9998;padding:8px 0}
+.mobilemenu.open{display:flex}
+.mobilelink{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;padding:10px 24px;transition:color .2s}
+.mobilelink:hover,.mobilelink.active{color:var(--gold)}
+.pagewrap{padding-top:52px;min-height:100vh}
+@media(max-width:700px){.navlinks{display:none}.hamburger{display:flex}}
+body{background:#020810}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 20px 60px}
+.trw{max-width:960px;width:100%}
+.trhd{font-family:var(--mono);font-size:9px;color:var(--cyan);letter-spacing:6px;text-align:center;margin-bottom:7px;opacity:.6}
+.trt{font-family:var(--display);font-size:clamp(2rem,6vw,3.2rem);color:var(--cyan);text-align:center;letter-spacing:.3em;text-shadow:0 0 18px rgba(103,232,249,.45);margin-bottom:36px}
+.trg{display:grid;grid-template-columns:1fr 190px 1fr;gap:18px;align-items:start}
+.hp{border:1px solid rgba(103,232,249,.18);padding:18px;background:rgba(103,232,249,.018);position:relative}
+.hp::before{content:'';position:absolute;top:0;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.hlab{font-family:var(--mono);font-size:8px;color:rgba(103,232,249,.45);letter-spacing:3px;margin-bottom:14px}
+.hstat{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid rgba(103,232,249,.07);flex-wrap:wrap;gap:4px}
+.stn{font-family:var(--mono);font-size:9px;color:rgba(103,232,249,.65);letter-spacing:2px}
+.stv{font-family:var(--mono);font-size:13px;color:var(--cyan);text-shadow:0 0 6px rgba(103,232,249,.4)}
+.hstat:last-child{border:none;margin:0;padding:0}
+.radar-c{display:flex;flex-direction:column;align-items:center;gap:14px}
+.radar{width:170px;height:170px;border-radius:50%;border:1px solid rgba(103,232,249,.28);position:relative;display:flex;align-items:center;justify-content:center}
+.radar::before{content:'';position:absolute;inset:22px;border-radius:50%;border:1px solid rgba(103,232,249,.18)}
+.radar::after{content:'';position:absolute;inset:44px;border-radius:50%;border:1px solid rgba(103,232,249,.12)}
+.rsweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(rgba(103,232,249,.18) 0deg,transparent 90deg);animation:rsw 4s linear infinite}
+@keyframes rsw{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.rcen{width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);z-index:1}
+.rblip{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--cyan);box-shadow:0 0 7px var(--cyan);animation:rbp 2s ease-in-out infinite}
+@keyframes rbp{0%,100%{opacity:1}50%{opacity:.2}}
+.rtxt{font-family:var(--mono);font-size:7px;color:rgba(103,232,249,.45);letter-spacing:3px}
+.ms{margin-top:14px;border:1px solid rgba(103,232,249,.15);padding:14px;background:rgba(103,232,249,.012)}
+.msl{font-family:var(--mono);font-size:7px;color:rgba(103,232,249,.45);letter-spacing:3px;margin-bottom:7px}
+.msv{font-family:var(--mono);font-size:11px;color:var(--green);text-shadow:0 0 6px rgba(34,197,94,.45);letter-spacing:2px}
+.mssub{font-family:var(--mono);font-size:8px;color:rgba(103,232,249,.35);margin-top:7px;letter-spacing:2px}
+.qdaily{margin-top:12px;border-top:1px solid rgba(103,232,249,.08);padding-top:11px;font-family:var(--elegant);font-size:.82rem;font-style:italic;color:rgba(232,213,196,.55);line-height:1.6}
+@media(max-width:700px){.trg{grid-template-columns:1fr}.radar-c{order:-1;margin:0 auto}}
+</style></head><body>
+<nav class="topnav"></nav>
+<div class="mobilemenu" id="mobilemenu"></div>
+<div class="pagewrap"><div class="wrap"><div class="trw">
+  <div class="trhd">IPC SURVEILLANCE &nbsp;·&nbsp; REAL-TIME INTEL &nbsp;·&nbsp; ACTIVE</div>
+  <div class="trt">STELLARON TRACKER</div>
+  <div class="trg">
+    <div>
+      <div class="hp"><div class="hlab">◆ CHARACTER STATS</div>
+        <div class="hstat"><span class="stn">ELEMENT</span><span class="stv">⚡ LIGHTNING</span></div>
+        <div class="hstat"><span class="stn">PATH</span><span class="stv">NIHILITY</span></div>
+        <div class="hstat"><span class="stn">RARITY</span><span class="stv">★★★★★</span></div>
+        <div class="hstat"><span class="stn">SPECIALTY</span><span class="stv">DoT / SHOCK</span></div>
+        <div class="hstat"><span class="stn">BASE SPD</span><span class="stv">100</span></div>
+      </div>
+      <div class="ms" style="margin-top:14px"><div class="msl">◆ QUOTE OF THE DAY</div><div class="qdaily" id="qdaily"></div></div>
+    </div>
+    <div class="radar-c">
+      <div class="radar"><div class="rsweep"></div><div class="rcen"></div>
+        <div class="rblip" style="top:28%;left:62%"></div>
+        <div class="rblip" style="top:66%;left:33%;animation-delay:.7s"></div>
+        <div class="rblip" style="top:44%;left:18%;animation-delay:1.4s"></div>
+      </div>
+      <div class="rtxt">TRACKING ACTIVE</div>
+    </div>
+    <div>
+      <div class="hp"><div class="hlab">◆ RECOMMENDED TEAM</div>
+        <div class="hstat"><span class="stn">CORE</span><span class="stv">KAFKA</span></div>
+        <div class="hstat"><span class="stn">DOT PARTNER</span><span class="stv">BLACK SWAN</span></div>
+        <div class="hstat"><span class="stn">HARMONY</span><span class="stv">RUAN MEI</span></div>
+        <div class="hstat"><span class="stn">DEBUFFER</span><span class="stv">JIAOQIU</span></div>
+        <div class="hstat"><span class="stn">SUSTAIN</span><span class="stv">HUOHUO</span></div>
+      </div>
+      <div class="ms" style="margin-top:14px"><div class="msl">◆ MISSION STATUS</div><div class="msv">● STELLARON RECOVERY — ACTIVE</div><div class="mssub">AGENT : KAFKA &nbsp;·&nbsp; LOCATION : CLASSIFIED</div></div>
+    </div>
+  </div>
+</div></div></div>
+<script>
+const PAGES=[
+  {id:'01',label:'STELLARON HUNTER',file:'index.html'},
+  {id:'02',label:'DOSSIER',file:'02-dossier.html'},
+  {id:'03',label:'BUTTERFLY',file:'03-butterfly.html'},
+  {id:'04',label:'ECLIPSE ECHO',file:'04-quotes.html'},
+  {id:'05',label:"NIHILITY'S SERVANT",file:'05-lore.html'},
+  {id:'06',label:'TRACKER',file:'06-tracker.html'},
+  {id:'07',label:"NIH. DREAM",file:'07-dream.html'},
+  {id:'08',label:'WANTED',file:'08-wanted.html'},
+];
+function buildNav(activeFile){
+  const curr=PAGES.find(p=>p.file===activeFile)||PAGES[0];
+  document.querySelector('.topnav').innerHTML=`
+    <a class="navlogo" href="index.html">KAFKA</a>
+    <div class="navlinks">${PAGES.map(p=>`<a class="navlink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('')}</div>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  `;
+  const mm=document.createElement('div');
+  mm.className='mobilemenu';mm.id='mobilemenu';
+  mm.innerHTML=PAGES.map(p=>`<a class="mobilelink${p.file===activeFile?' active':''}" href="${p.file}">${p.id} · ${p.label}</a>`).join('');
+  document.body.prepend(mm);
+}
+function toggleMenu(){document.getElementById('mobilemenu').classList.toggle('open')}
+buildNav('06-tracker.html');
+const qs=["You won't remember a thing except me.","Patience is all you need.","A spider doesn't chase its prey. It simply waits — and weaves.","Smile. It makes them wonder what you're thinking.","Fear is such a waste of a perfectly good emotion."];
+document.getElementById('qdaily').textContent='"'+qs[Math.floor(Math.random()*qs.length)]+'"';
+</script>
+</body></html>

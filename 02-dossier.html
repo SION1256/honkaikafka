@@ -63,6 +63,41 @@ body{background:#020a04}
 @keyframes barFill{from{width:0}}
 @media(max-width:600px){.dos-grid{grid-template-columns:1fr}}
 
+/* KAFKA DOSSIER PORTRAIT */
+.dos-portrait{
+  width:120px;
+  height:120px;
+  border:2px solid rgba(0,255,65,.3);
+  background:rgba(0,255,65,.02);
+  border-radius:2px;
+  overflow:hidden;
+  position:relative;
+  flex-shrink:0;
+}
+.dos-portrait img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:.9;
+}
+.dos-portrait::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.05) 2px,rgba(0,255,65,.05) 4px);
+  mix-blend-mode:overlay;
+  pointer-events:none;
+}
+@media(max-width:600px){
+  .dos-portrait{
+    width:80px;
+    height:80px;
+  }
+  .dos-hd{
+    align-items:center;
+  }
+}
+
 /* ── NAVIGATION FOOTER ── */
 .dos-nav{margin-top:40px;padding-top:24px;border-top:1px solid rgba(0,255,65,.18);display:grid;gap:8px}
 .nav-label{font-family:var(--mono);font-size:8px;color:rgba(0,255,65,.45);letter-spacing:3px;margin-bottom:12px}
@@ -117,6 +152,9 @@ body{background:#020a04}
   <div class="dos-hd">
     <div class="dos-logo">INTERASTRAL PEACE CORPORATION<br>INTEL DATABASE — NODE 7734<br>CLEARANCE LEVEL : ALPHA<br><span style="color:rgba(0,255,65,.3)">LAST UPDATED : [REDACTED]</span></div>
     <div class="dos-cls">CLASSIFIED</div>
+    <div class="dos-portrait">
+      <img src="https://chronic-orange-bps2hwizwk.edgeone.app/kafka.jpg" alt="Kafka">
+    </div>
   </div>
   <div class="dos-name">K A F K A</div>
   <div class="dos-sub">FILE NO. SH-001 &nbsp;·&nbsp; STELLARON HUNTER &nbsp;·&nbsp; WANTED STATUS : ACTIVE</div>

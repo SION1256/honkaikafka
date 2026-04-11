@@ -69,7 +69,7 @@ body{background:linear-gradient(160deg,#0f0522,#1a0a32);background-attachment:fi
   <div class="qbox"><div class="qt" id="qText">"You won't remember a thing except me."</div></div>
   <button class="qbtn" onclick="nextQ()">✦ &nbsp; NEXT KAFKA QUOTE &nbsp; ✦</button>
   <div class="cdbox">
-    <div class="cdtit">⏳ &nbsp; MENUNGGU RERUN KAFKA — COUNTDOWN</div>
+    <div class="cdtit">⏳ &nbsp; WAITING FOR KAFKA RE-RUN — COUNTDOWN</div>
     <div class="cdnums">
       <div class="cdu"><span class="cdn" id="cdd">00</span><span class="cdl">DAYS</span></div>
       <div class="cdu"><span class="cdn" id="cdh">00</span><span class="cdl">HOURS</span></div>
@@ -109,7 +109,7 @@ function buildNav(activeFile){
 }
 function toggleMenu(){document.getElementById('mobilemenu').classList.toggle('open')}
 buildNav('04-tempe.html');
-const quotes=["You won't remember a thing except me.","Patience is all you need.","Everyone has their own melody... Mine just happens to be played in the dark.","I never force anyone. I simply help them hear what they already wanted.","A spider doesn't chase its prey. It simply waits — and weaves.","Eclipse echo~ ♪  ...Did I surprise you?","Even the longest night yields to dawn. But I've always preferred the night.","You're interesting. Most people bore me after the first five minutes.","Fear is such a waste of a perfectly good emotion.","The script has already been written. We're simply following the story.","Smile. It makes them wonder what you're thinking."];
+const quotes=["You won't remember a thing except me.","Patience is all you need.","Everyone has their own melody... Mine just happens to be played in the dark.","I never force anyone. I simply help them hear what they already wanted.","A spider doesn't chase its prey. It simply waits — and weaves.","Eclipse echo~ ♪  ...Did I surprise you?","Even the longest night yields to dawn. But I've always preferred the night.","You're interesting. Most people bore me after the first five minutes.","Fear is such a waste of a perfectly good emotion.","The script has already been written. We're simply following the story.","Smile. It makes them wonder what you're thinking.","The script is already written, darling. All we're doing now is making sure we look good in the cover photo."];
 let qi=0;
 function nextQ(){const el=document.getElementById('qText');el.style.opacity='0';setTimeout(()=>{qi=(qi+1)%quotes.length;el.textContent='"'+quotes[qi]+'"';el.style.opacity='1';},280);}
 const rerun=new Date('2026-07-21T10:00:00');
